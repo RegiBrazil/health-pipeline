@@ -1,5 +1,5 @@
 // Updated by Regi
-// * Dec 21 2020  using https://github.com/RegiBrazil/health-pipeline.git
+// * Dec 21 2020  using git@github.com:RegiBrazil/health-pipeline.git
  // *************************************************************//
 // Agent labels
 def zOsAgentLabel = env.ZOS_AGENT_LABEL ? env.ZOS_AGENT_LABEL : 'e2e-pipeline'
