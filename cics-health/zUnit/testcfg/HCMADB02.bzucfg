@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<runner:RunnerConfiguration xmlns:runner="http://www.ibm.com/zUnit/3.0.0.0/TestRunner" id="b145ea89-1fb3-4dbd-850f-1d92d7a48731">
+  <runner:options contOnTestCaseError="false" contOnTestCaseFail="true" contOnTestError="false" contOnTestFail="true"/>
+  <runner:testCase moduleName="THCMADB0">
+    <test name="TEST3" entry="TEST_TEST3" type="CICS" init="BZU_INIT" term="BZU_TERM" program="HCMADB02" commarea="32500" skipTest="false" resetFile="true" stubCall="true" dummy="false"/>
+    <test name="TEST4" entry="TEST_TEST4" type="CICS" init="BZU_INIT" term="BZU_TERM" program="HCMADB02" commarea="32500" skipTest="false" resetFile="false" stubCall="true" dummy="false"/>
+  </runner:testCase>
+  <runner:playback moduleName="HCMADB02">
+    <playbackFile name="&lt;HLQ>.ZUNIT.PB.HCMADB02" localName="HCMADB02.plbck"/>
+  </runner:playback>
+  <runner:fileAttributes hlqDdName="AZUHLQ"/>
+</runner:RunnerConfiguration>
