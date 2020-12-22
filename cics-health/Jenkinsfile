@@ -33,7 +33,7 @@ def artiCredentialsId = null
 
 // UCD
 def ucdApplication = 'A HC zOS COBOL CICS'
-def ucdProcess = 'Process: Deploy HC to CICS + MF to Windows'
+def ucdProcess = 'Deploy HC to CICS + MF to Windows'
 def ucdComponent = 'HC_CICS'
 def ucdEnv = 'TEST'
 def ucdSite = 'Urbancode server'
