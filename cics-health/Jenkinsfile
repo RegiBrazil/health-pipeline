@@ -47,8 +47,8 @@ def verbose = env.VERBOSE && env.VERBOSE == 'true' ? true : false
 def hasBuildFiles = true
 // def buildVerbose = verbose ? '-v' : ''
 // ---------------------------Verbose
-// def buildVerbose = ''
-def buildVerbose = '-v'
+def buildVerbose = ''
+// verbose > def buildVerbose = '-v'
 // ---------------------------Verbose
 @NonCPS
 String getArtifactoruUrl(String artiUrl) {
@@ -112,7 +112,9 @@ pipeline {
                                                                      url: srcGitRepo,
                                                                      ]]])
  // Regi - print repo and branch
-                    println "*REGI* repo:${srcGitRepo} branch: ${srcGitBranch}"
+                    println "*REGI* my repo: ${srcGitRepo} branch: ${srcGitBranch}"
+                    println "*REGI* Groovy scripts from: ${zAppBuildGitRepo} branch: ${zAppBuildGitBranch}"
+                    println "*REGI* More Groovy scripts from: ${dbbGitRepo} branch: ${dbbGitBranch}"
                     }
 
                     dir("dbb-zappbuild") {
