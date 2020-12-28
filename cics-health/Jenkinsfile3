@@ -1,4 +1,4 @@
-// Updated by Regi  in 2020
+// Updated by Regi
 // Dec 28 - Using cloned https://github.com/IBM/dbb-zappbuild  branch  sandbox3 se lines 15 and 17
 // * Dec 22 2020  Build only what is changed (-i option) see line 26
 // * Dec 22 2020  Using Verbose see line 50
