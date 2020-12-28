@@ -1,7 +1,8 @@
 // Updated by Regi  in 2020
 // Dec 28 - Using cloned https://github.com/IBM/dbb-zappbuild  branch  sandbox3 se lines 15 and 17
-// * Dec 09 2020  using https://github.com/RegiBrazil/dbb-pipeline.git
-    println "**Regi IF using VPN it FAILS"
+// * Dec 22 2020  Build only what is changed (-i option) see line 26
+// * Dec 22 2020  Using Verbose see line 50
+// * Dec 21 2020  using https://github.com/RegiBrazil/health-pipeline.git
  // *************************************************************//
 // Agent labels
 def zOsAgentLabel = env.ZOS_AGENT_LABEL ? env.ZOS_AGENT_LABEL : 'e2e-pipeline'
@@ -27,7 +28,7 @@ def dbbHome=null
 def dbbUrl=null
 def dbbHlq=null
 def dbbBuildType='-i'
-// def dbbBuildType='-f'
+//def dbbBuildType='-f'
 def dbbGroovyzOpts= ''
 def dbbBuildExtraOpts= ''
 
@@ -36,10 +37,10 @@ def dbbBuildExtraOpts= ''
 def artiCredentialsId = null
 
 // UCD
-def ucdApplication = 'GenApp_CICS'
-def ucdProcess = 'Deploy GenApp Appl to CICS'
-def ucdComponent = 'GenApp'
-def ucdEnv = 'DEV'
+def ucdApplication = 'A HC zOS COBOL CICS'
+def ucdProcess = 'Deploy HC to CICS + MF to Windows'
+def ucdComponent = 'HC_CICS'
+def ucdEnv = 'TEST'
 def ucdSite = 'Urbancode server'
 
 // Verbose
@@ -50,7 +51,7 @@ def hasBuildFiles = true
 // def buildVerbose = verbose ? '-v' : ''
 // ---------------------------Verbose
 def buildVerbose = ''
-// verbose --> def buildVerbose = '-v'
+// verbose > def buildVerbose = '-v'
 // ---------------------------Verbose
 @NonCPS
 String getArtifactoruUrl(String artiUrl) {
@@ -96,7 +97,7 @@ pipeline {
                     if ( env.UCD_BUZTOOL_PATH == null )
                         error("UCD_BUZTOOL_PATH is not defined !!!")
 
-                    dir('cics-genapp') {
+                    dir('cics-health') {
                         sh(script: 'rm -f .git/info/sparse-checkout', returnStdout: true)
 // My Forked repo and branch are below: srcGitRepo  and srcGitBranch
                         srcGitRepo = scm.getUserRemoteConfigs()[0].getUrl()
@@ -107,14 +108,16 @@ pipeline {
                                                 extensions: [
                                                 [$class: 'SparseCheckoutPaths',
                                                    sparseCheckoutPaths:[[$class:'SparseCheckoutPath',
-                                                   path:'cics-genapp/']]]
+                                                   path:'cics-health/']]]
                                                 ],
                                                 submoduleCfg: [],
                                                 userRemoteConfigs: [[
                                                                      url: srcGitRepo,
                                                                      ]]])
  // Regi - print repo and branch
-                    println "*REGI* repo:${srcGitRepo} branch: ${srcGitBranch}"
+                    println "*REGI* my repo: ${srcGitRepo} branch: ${srcGitBranch}"
+                    println "*REGI* Groovy scripts from: ${zAppBuildGitRepo} branch: ${zAppBuildGitBranch}"
+                    println "*REGI* More Groovy scripts from: ${dbbGitRepo} branch: ${dbbGitBranch}"
                     }
 
                     dir("dbb-zappbuild") {
@@ -169,7 +172,7 @@ pipeline {
  // Regi - print the path where the Jenkins workspace is created
       println "*REGI* Jenkins workspace created at: ${WORKSPACE} "
 
-     sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-genapp --sourceDir ${WORKSPACE}/cics-genapp  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.GENAPP --url $dbbUrl -pw ADMIN $dbbBuildType $buildVerbose $dbbBuildExtraOpts"
+     sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-health --sourceDir ${WORKSPACE}/cics-health  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.HEALTH --url $dbbUrl -pw ADMIN $dbbBuildType $buildVerbose $dbbBuildExtraOpts"
                         def files = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/buildList.txt")
                         // Do not enter into some steps if nothing in the build list
                         hasBuildFiles = files.length > 0 && files[0].length > 0
@@ -184,7 +187,7 @@ pipeline {
                     zUnitContents.each { zUnitContent ->
                         writeFile file: '/tmp/zUnit.zunit', text:zUnitContent
                         def rc = sh (returnStatus: true, script: '''#!/bin/sh
-                            curl --silent https://raw.githubusercontent.com/ibm/dbb-pipeline/master/cics-genapp/zUnit/xsl/AZUZ2J30.xsl -o /tmp/AZUZ2J30.xsl
+                            curl --silent https://raw.githubusercontent.com/ibm/health-pipeline/master/cics-health/zUnit/xsl/AZUZ2J30.xsl -o /tmp/AZUZ2J30.xsl
                             xsltproc /tmp/AZUZ2J30.xsl /tmp/zUnit.zunit > ${WORKSPACE}/zUnit.xml
                         ''')
                         junit "zUnit.xml"
