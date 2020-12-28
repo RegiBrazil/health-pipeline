@@ -120,7 +120,7 @@ pipeline {
                     println "*REGI* More Groovy scripts from: ${dbbGitRepo} branch: ${dbbGitBranch}"
                     }
 
-                    dir("dbb-zappbuild") {
+                    dir("dbb-zappbuild-1") {
                         sh(script: 'rm -f .git/info/sparse-checkout', returnStdout: true)
                         def scmVars =
                             checkout([$class: 'GitSCM', branches: [[name: zAppBuildGitBranch]],
@@ -172,7 +172,7 @@ pipeline {
  // Regi - print the path where the Jenkins workspace is created
       println "*REGI* Jenkins workspace created at: ${WORKSPACE} "
 
-     sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-health --sourceDir ${WORKSPACE}/cics-health  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.HEALTH --url $dbbUrl -pw ADMIN $dbbBuildType $buildVerbose $dbbBuildExtraOpts"
+     sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild-1/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-health --sourceDir ${WORKSPACE}/cics-health  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.HEALTH --url $dbbUrl -pw ADMIN $dbbBuildType $buildVerbose $dbbBuildExtraOpts"
                         def files = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/buildList.txt")
                         // Do not enter into some steps if nothing in the build list
                         hasBuildFiles = files.length > 0 && files[0].length > 0
