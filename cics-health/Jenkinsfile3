@@ -1,7 +1,7 @@
 // Updated by Regi
 // Dec 28 - Using cloned https://github.com/IBM/dbb-zappbuild  branch  sandbox3 se lines 15 and 17
-// * Dec 22 2020  Build only what is changed (-i option) see line 26
-// * Dec 22 2020  Using Verbose see line 50
+// * Dec 22 2020  Build only what is changed (-i option) see line 28
+// * Dec 22 2020  Using Verbose see line 52
 // * Dec 21 2020  using https://github.com/RegiBrazil/health-pipeline.git
  // *************************************************************//
 // Agent labels
@@ -120,7 +120,7 @@ pipeline {
                     println "*REGI* More Groovy scripts from: ${dbbGitRepo} branch: ${dbbGitBranch}"
                     }
 
-                    dir("dbb-zappbuild-1") {
+                    dir("dbb-zappbuild") {
                         sh(script: 'rm -f .git/info/sparse-checkout', returnStdout: true)
                         def scmVars =
                             checkout([$class: 'GitSCM', branches: [[name: zAppBuildGitBranch]],
@@ -172,7 +172,7 @@ pipeline {
  // Regi - print the path where the Jenkins workspace is created
       println "*REGI* Jenkins workspace created at: ${WORKSPACE} "
 
-     sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild-1/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-health --sourceDir ${WORKSPACE}/cics-health  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.HEALTH --url $dbbUrl -pw ADMIN $dbbBuildType $buildVerbose $dbbBuildExtraOpts"
+     sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-health --sourceDir ${WORKSPACE}/cics-health  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.HEALTH --url $dbbUrl -pw ADMIN $dbbBuildType $buildVerbose $dbbBuildExtraOpts"
                         def files = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/buildList.txt")
                         // Do not enter into some steps if nothing in the build list
                         hasBuildFiles = files.length > 0 && files[0].length > 0
