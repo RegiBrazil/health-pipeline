@@ -185,7 +185,7 @@ pipeline {
                         writeFile file: '/tmp/zUnit.zunit', text:zUnitContent
                         def rc = sh (returnStatus: true, script: '''#!/bin/sh
  // changed                 curl --silent https://raw.githubusercontent.com/ibm/health-pipeline/master/cics-health/zUnit/xsl/AZUZ2J30.xsl -o /tmp/AZUZ2J30.xsl
-                            curl --silent https://raw.githubusercontent.com/ibm/cics-genapp/master/cics-genapp/zUnit/xsl/AZUZ2J30.xsl -o /tmp/AZUZ2J30.xsl
+                            curl --silent https://raw.githubusercontent.com/ibm/dbb-pipeline/master/cics-genapp/zUnit/xsl/AZUZ2J30.xsl -o /tmp/AZUZ2J30.xsl
                             xsltproc /tmp/AZUZ2J30.xsl /tmp/zUnit.zunit > ${WORKSPACE}/zUnit.xml
                         ''')
                         junit "zUnit.xml"
