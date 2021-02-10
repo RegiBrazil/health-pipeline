@@ -27,8 +27,8 @@ def dbbGitBranch = 'master'
 def dbbHome=null
 def dbbUrl=null
 def dbbHlq=null
-// def dbbBuildType='-i'
-def dbbBuildType='-f'
+def dbbBuildType='-i'
+// def dbbBuildType='-f'
 def dbbGroovyzOpts= ''
 def dbbBuildExtraOpts= ''
 
