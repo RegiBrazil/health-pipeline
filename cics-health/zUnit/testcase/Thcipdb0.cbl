@@ -5,7 +5,7 @@
       *| COMPONENT: IBM Z/OS AUTOMATED UNIT TESTING FRAMEWORK (ZUNIT)  |
       *|   FOR ENTERPRISE COBOL AND PL/I                               |
       *| PROGRAM: ENTERPRISE COBOL ZUNIT TEST CASE FOR DYNAMIC RUNNER  |
-      *| DATE GENERATED: 02/24/2021 10:30                              |
+      *| DATE GENERATED: 03/08/2021 12:43                              |
       *| ID: 85ed42e5-e713-4be0-83dd-13b32d68c38b                      |
       *+---------------------------------------------------------------+
       *+---------------------------------------------------------------+
@@ -492,7 +492,6 @@
              END-STRING
            SUBTRACT 1 FROM TRACE-LEN OF BZ-TRACE
            SET AZ-TRACE-PTR TO ADDRESS OF TRACE-TXT OF BZ-TRACE
-      *     CALL 'XCHRFLTR' USING TRACE-LEN OF BZ-TRACE AZ-TRACE-PTR
            CALL BZUTRACE USING BZ-TRACE
            MOVE 1 TO TRACE-LEN OF BZ-TRACE
            STRING 'VALUE='
@@ -501,7 +500,6 @@
                WITH POINTER TRACE-LEN OF BZ-TRACE
              END-STRING
            SUBTRACT 1 FROM TRACE-LEN OF BZ-TRACE
-      *     CALL 'XCHRFLTR' USING TRACE-LEN OF BZ-TRACE AZ-TRACE-PTR
            CALL BZUTRACE USING BZ-TRACE
            MOVE 1 TO TRACE-LEN OF BZ-TRACE
            STRING 'EXPECTED VALUE='
@@ -510,7 +508,6 @@
                WITH POINTER TRACE-LEN OF BZ-TRACE
              END-STRING
            SUBTRACT 1 FROM TRACE-LEN OF BZ-TRACE
-      *     CALL 'XCHRFLTR' USING TRACE-LEN OF BZ-TRACE AZ-TRACE-PTR
            CALL BZUTRACE USING BZ-TRACE
            EXIT.
        END PROGRAM TEST_TEST3.
@@ -1021,7 +1018,6 @@
              END-STRING
            SUBTRACT 1 FROM TRACE-LEN OF BZ-TRACE
            SET AZ-TRACE-PTR TO ADDRESS OF TRACE-TXT OF BZ-TRACE
-      *     CALL 'XCHRFLTR' USING TRACE-LEN OF BZ-TRACE AZ-TRACE-PTR
            CALL BZUTRACE USING BZ-TRACE
            MOVE 1 TO TRACE-LEN OF BZ-TRACE
            STRING 'VALUE='
@@ -1030,7 +1026,6 @@
                WITH POINTER TRACE-LEN OF BZ-TRACE
              END-STRING
            SUBTRACT 1 FROM TRACE-LEN OF BZ-TRACE
-      *     CALL 'XCHRFLTR' USING TRACE-LEN OF BZ-TRACE AZ-TRACE-PTR
            CALL BZUTRACE USING BZ-TRACE
            MOVE 1 TO TRACE-LEN OF BZ-TRACE
            STRING 'EXPECTED VALUE='
@@ -1039,7 +1034,6 @@
                WITH POINTER TRACE-LEN OF BZ-TRACE
              END-STRING
            SUBTRACT 1 FROM TRACE-LEN OF BZ-TRACE
-      *     CALL 'XCHRFLTR' USING TRACE-LEN OF BZ-TRACE AZ-TRACE-PTR
            CALL BZUTRACE USING BZ-TRACE
            EXIT.
        END PROGRAM TEST_TEST4.
@@ -1551,7 +1545,6 @@
              END-STRING
            SUBTRACT 1 FROM TRACE-LEN OF BZ-TRACE
            SET AZ-TRACE-PTR TO ADDRESS OF TRACE-TXT OF BZ-TRACE
-      *     CALL 'XCHRFLTR' USING TRACE-LEN OF BZ-TRACE AZ-TRACE-PTR
            CALL BZUTRACE USING BZ-TRACE
            MOVE 1 TO TRACE-LEN OF BZ-TRACE
            STRING 'VALUE='
@@ -1560,7 +1553,6 @@
                WITH POINTER TRACE-LEN OF BZ-TRACE
              END-STRING
            SUBTRACT 1 FROM TRACE-LEN OF BZ-TRACE
-      *     CALL 'XCHRFLTR' USING TRACE-LEN OF BZ-TRACE AZ-TRACE-PTR
            CALL BZUTRACE USING BZ-TRACE
            MOVE 1 TO TRACE-LEN OF BZ-TRACE
            STRING 'EXPECTED VALUE='
@@ -1569,10 +1561,165 @@
                WITH POINTER TRACE-LEN OF BZ-TRACE
              END-STRING
            SUBTRACT 1 FROM TRACE-LEN OF BZ-TRACE
-      *     CALL 'XCHRFLTR' USING TRACE-LEN OF BZ-TRACE AZ-TRACE-PTR
            CALL BZUTRACE USING BZ-TRACE
            EXIT.
        END PROGRAM TEST_TEST5.
+      *+---------------------------------------------------------------+
+      *| BZU_TEST                                                      |
+      *|     THIS PROGRAM IS CALLBACK DEFINITION FOR TEST              |
+      *+---------------------------------------------------------------+
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. 'BZU_TEST'.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 PROGRAM-NAME   PIC X(8)  VALUE 'HCIPDB01'.
+       01 BZ-ASSERT.
+         03 MESSAGE-LEN PIC S9(4) COMP-4 VALUE 24.
+         03 MESSAGE-TXT PIC X(254) VALUE 'HELLO FROM TEST CALLBACK'.
+       01  BZ-P1 PIC S9(9) COMP-4 VALUE 4.
+       01  BZ-P2 PIC S9(9) COMP-4 VALUE 2001.
+       01  BZ-P3 PIC X(3) VALUE 'AZU'.
+       01 BZ-TRACE.
+         03 TRACE-LEN       PIC S9(4) COMP-4 VALUE 5.
+         03 TRACE-TXT       PIC X(254) VALUE 'TRACE'.
+       01 BZUASSRT          PIC X(8) VALUE 'BZUASSRT'.
+       01 BZUTRACE          PIC X(8) VALUE 'BZUTRACE'.
+       01 AZ-TRACE-PTR      POINTER.
+       01 ASSERT-ST.
+         03 ASSERT-RC PIC 9(9) BINARY VALUE 4.
+         03 ASSERT-TEXT PIC 9(4) BINARY VALUE 0.
+       01 AZ-TEST-NAME-LEN       PIC S9(9) COMP-5.
+       LOCAL-STORAGE SECTION.
+       LINKAGE SECTION.
+       01 AZ-TEST                   PIC X(80).
+       01 AZ-INFO-BLOCK.
+          COPY BZUITERC.
+       01 AZ-ARG-LIST.
+         03 ARG-LENGTH PIC 9(4) COMP-4.
+         03 ARG-DATA PIC X(256).
+       1 DFHEIBLK.
+         2 EIBTIME PICTURE S9(7) USAGE COMPUTATIONAL-3.
+         2 EIBDATE PICTURE S9(7) USAGE COMPUTATIONAL-3.
+         2 EIBTRNID PICTURE X(4).
+         2 EIBTASKN PICTURE S9(7) USAGE COMPUTATIONAL-3.
+         2 EIBTRMID PICTURE X(4).
+         2 DFHEIGDI PICTURE S9(4) USAGE COMPUTATIONAL-5.
+         2 EIBCPOSN PICTURE S9(4) USAGE COMPUTATIONAL-5.
+         2 EIBCALEN PICTURE S9(4) USAGE COMPUTATIONAL-5.
+         2 EIBAID PICTURE X(1).
+         2 EIBFN PICTURE X(2).
+         2 EIBRCODE PICTURE X(6).
+         2 EIBDS PICTURE X(8).
+         2 EIBREQID PICTURE X(8).
+         2 EIBRSRCE PICTURE X(8).
+         2 EIBSYNC PICTURE X.
+         2 EIBFREE PICTURE X.
+         2 EIBRECV PICTURE X.
+         2 EIBSEND PICTURE X.
+         2 EIBATT PICTURE X.
+         2 EIBEOC PICTURE X.
+         2 EIBFMH PICTURE X.
+         2 EIBCOMPL PICTURE X(1).
+         2 EIBSIG PICTURE X(1).
+         2 EIBCONF PICTURE X(1).
+         2 EIBERR PICTURE X(1).
+         2 EIBERRCD PICTURE X(4).
+         2 EIBSYNRB PICTURE X.
+         2 EIBNODAT PICTURE X.
+         2 EIBRESP PICTURE S9(8) USAGE COMPUTATIONAL.
+         2 EIBRESP2 PICTURE S9(8) USAGE COMPUTATIONAL.
+         2 EIBRLDBK PICTURE X(1).
+       1 DFHCOMMAREA.
+         3 CA-REQUEST-ID PIC X(6).
+         3 CA-RETURN-CODE PIC 9(2).
+         3 CA-PATIENT-ID PIC 9(10).
+         3 CA-REQUEST-SPECIFIC PIC X(32482).
+         3 CA-PATIENT-REQUEST REDEFINES CA-REQUEST-SPECIFIC.
+         5 CA-INS-CARD-NUM PIC X(10).
+         5 CA-FIRST-NAME PIC X(10).
+         5 CA-LAST-NAME PIC X(20).
+         5 CA-DOB PIC X(10).
+         5 CA-ADDRESS PIC X(20).
+         5 CA-CITY PIC X(20).
+         5 CA-POSTCODE PIC X(10).
+         5 CA-PHONE-MOBILE PIC X(20).
+         5 CA-EMAIL-ADDRESS PIC X(50).
+         5 CA-USERID PIC X(10).
+         5 CA-ADDITIONAL-DATA PIC X(32302).
+         3 CA-PATIENT-USER-REQUEST REDEFINES CA-REQUEST-SPECIFIC.
+         5 CA-USERNAME PIC X(10).
+         5 CA-USERPASSWORD PIC X(14).
+         5 CA-ADDITIONAL-DATA PIC X(32458).
+         3 CA-MEDICATION-REQUEST REDEFINES CA-REQUEST-SPECIFIC.
+         5 CA-DRUG-NAME PIC X(50).
+         5 CA-STRENGTH PIC X(20).
+         5 CA-AMOUNT PIC 9(03).
+         5 CA-ROUTE PIC X(20).
+         5 CA-FREQUENCY PIC X(20).
+         5 CA-IDENTIFIER PIC X(20).
+         5 CA-BIOMED-TYPE PIC X(2).
+         5 CA-START-DATE PIC X(10).
+         5 CA-END-DATE PIC X(10).
+         5 CA-PRESCRIPTION-ID PIC 9(10).
+         5 CA-ADDITIONAL-DATA PIC X(32317).
+         3 CA-MEDITATION-REQUEST REDEFINES CA-REQUEST-SPECIFIC.
+         5 CA-MEDITATION-NAME PIC X(50).
+         5 CA-MEDITATION-TYPE PIC X(20).
+         5 CA-RELIEF PIC X(20).
+         5 CA-POSTURE PIC X(20).
+         5 CA-HOW-OFTEN PIC X(20).
+         5 CA-ADDITIONAL-DATA PIC X(32352).
+         3 CA-THRESHOLD-REQUEST REDEFINES CA-REQUEST-SPECIFIC.
+         5 CA-HR-THRESHOLD PIC X(10).
+         5 CA-BP-THRESHOLD PIC X(10).
+         5 CA-MS-THRESHOLD PIC X(10).
+         5 CA-ADDITIONAL-DATA PIC X(32452).
+         3 CA-VISIT-REQUEST REDEFINES CA-REQUEST-SPECIFIC.
+         5 CA-VISIT-DATE PIC X(10).
+         5 CA-VISIT-TIME PIC X(10).
+         5 CA-HEART-RATE PIC X(10).
+         5 CA-BLOOD-PRESSURE PIC X(10).
+         5 CA-MENTAL-STATE PIC X(10).
+         5 CA-ADDITIONAL-DATA PIC X(32432).
+       PROCEDURE DIVISION.
+      * SET INPUT VALUE
+           ENTRY "PGM_INPT_HCIPDB01" USING AZ-TEST AZ-INFO-BLOCK
+           DFHEIBLK DFHCOMMAREA.
+           DISPLAY 'PGM_INPT_HCIPDB01 CHECK VALUES...'.
+           MOVE 0 TO RETURN-CODE.
+           INSPECT AZ-TEST TALLYING AZ-TEST-NAME-LEN FOR CHARACTERS
+             BEFORE INITIAL SPACE.
+           EVALUATE AZ-TEST(1:AZ-TEST-NAME-LEN)
+           WHEN SPACE
+             CONTINUE
+           WHEN OTHER
+             CONTINUE
+           END-EVALUATE.
+           PERFORM TEARDOWN.
+      * EVALUATE OUTPUT VALUE
+           ENTRY "PGM_OUTP_HCIPDB01" USING AZ-TEST AZ-INFO-BLOCK
+           DFHEIBLK DFHCOMMAREA.
+           DISPLAY 'PGM_OUTP_HCIPDB01 INPUT VALUES...'.
+           MOVE 4 TO RETURN-CODE.
+           INSPECT AZ-TEST TALLYING AZ-TEST-NAME-LEN FOR CHARACTERS
+             BEFORE INITIAL SPACE.
+           EVALUATE AZ-TEST(1:AZ-TEST-NAME-LEN)
+           WHEN SPACE
+             CONTINUE
+           WHEN 'TEST3'
+             MOVE 0 TO RETURN-CODE
+           WHEN 'TEST4'
+             MOVE 0 TO RETURN-CODE
+           WHEN 'TEST5'
+             MOVE 0 TO RETURN-CODE
+           WHEN OTHER
+             CONTINUE
+           END-EVALUATE.
+           PERFORM TEARDOWN.
+       TEARDOWN.
+           DISPLAY 'BZU_TEST SUCCESSFUL.'
+           GOBACK.
+       END PROGRAM BZU_TEST.
       *+---------------------------------------------------------------+
       *| BZU_INIT                                                      |
       *|     INITIAL PROCEDURE                                         |
@@ -1613,56 +1760,6 @@
            DISPLAY 'BZU_TERM : ' AZ-TEST(1:AZ-TEST-NAME-LEN)
            GOBACK.
        END PROGRAM BZU_TERM.
-      *+---------------------------------------------------------------+
-      *| XCHRFLTR                                                      |
-      *|     XML CHARACTER FILTER                                      |
-      *|     REPLACE ILLEGAL XML CHARACTER WITH SPACE                  |
-      *+---------------------------------------------------------------+
-       IDENTIFICATION DIVISION.
-       PROGRAM-ID. 'XCHRFLTR'.
-       DATA DIVISION.
-       WORKING-STORAGE SECTION.
-       1 X00000030.
-       2 PIC X(24) USAGE DISPLAY
-           VALUE X'0001020304060708090A0B0C0E0F1011121314161718191A'.
-       2 PIC X(24) USAGE DISPLAY
-           VALUE X'1B1C1D1E1F2021222324262728292A2B2C2D2E2F30313233'.
-       2 PIC X(13) USAGE DISPLAY
-           VALUE X'3435363738393A3B3C3D3E3FFF'.
-       1 ILLEGAL-XML-CHARS REDEFINES X00000030
-           PIC X(61).
-       01 E-QUOT PIC X(6) VALUE '&quot;'.
-       LOCAL-STORAGE SECTION.
-       1 W-TXT       PIC X(254) VALUE SPACES.
-       1 W-N         PIC 9(3) BINARY VALUE 0.
-       1 W-IN-I      PIC 9(3) BINARY VALUE 0.
-       1 W-OUT-I     PIC 9(3) BINARY VALUE 1.
-       LINKAGE SECTION.
-       1 CONTENT-LEN PIC S9(4) COMP-4.
-       1 CONTENT-PTR POINTER.
-       1 CONTENT-TXT PIC X(254).
-       PROCEDURE DIVISION USING CONTENT-LEN CONTENT-PTR.
-       MAINLINE SECTION.
-           SET ADDRESS OF CONTENT-TXT TO CONTENT-PTR
-           INSPECT CONTENT-TXT(1:CONTENT-LEN) CONVERTING
-            ILLEGAL-XML-CHARS TO SPACES
-           PERFORM VARYING W-IN-I FROM 1 BY 1
-             UNTIL W-IN-I > CONTENT-LEN
-             EVALUATE CONTENT-TXT(W-IN-I:1)
-             WHEN '"'
-               MOVE LENGTH OF E-QUOT TO W-N
-               MOVE E-QUOT TO W-TXT(W-OUT-I:W-N)
-             WHEN OTHER
-               MOVE 1 TO W-N
-               MOVE CONTENT-TXT(W-IN-I:1) TO W-TXT(W-OUT-I:1)
-             END-EVALUATE
-             ADD W-N TO W-OUT-I
-           END-PERFORM
-           MOVE W-TXT(1:W-OUT-I) TO CONTENT-TXT(1:W-OUT-I)
-           SUBTRACT 1 FROM W-OUT-I
-           MOVE W-OUT-I TO CONTENT-LEN
-           GOBACK.
-       END PROGRAM 'XCHRFLTR'.
       *+---------------------------------------------------------------+
       *| EVALOPT                                                       |
       *|   FUNCTION TO EVALUATE THAT THE BIT OF OPTION DATA            |
@@ -1795,7 +1892,7 @@
        END PROGRAM 'EVALOPT'.
       *+---------------------------------------------------------------+
       *| GTMEMRC                                                       |
-      *|     GET DATA AREA FOR RECORD COUNT OF CICS/DB2 GROUP          |
+      *|     GET DATA AREA FOR RECORD COUNT OF SUBSYSTEM GROUP         |
       *+---------------------------------------------------------------+
        IDENTIFICATION DIVISION.
        PROGRAM-ID. 'GTMEMRC'.
