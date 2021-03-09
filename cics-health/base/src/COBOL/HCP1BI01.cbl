@@ -1,5 +1,5 @@
-      *   Inquire Patient    - Oct 30 2020 13:02
-      *   change  obtain Patient's details from database.              *
+      *   Inquire Patient    - March 09 2021 10:35
+      *   obtain Patient's details from database.
       * Patient Inquire Business logic                                 *
       ******************************************************************
        IDENTIFICATION DIVISION.
