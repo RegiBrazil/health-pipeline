@@ -10,7 +10,7 @@ HCZMENU  DFHMDI SIZE=(24,80)
          DFHMDF POS=(1,1),LENGTH=4,INITIAL='HCAZ',                     *
                ATTRB=(ASKIP)
          DFHMDF POS=(1,20),LENGTH=51,                                  *
-               INITIAL='Health Care Provider Menu -  Mar 09,  13:51 ', *
+               INITIAL='Health Care Provider Menu -  Mar 09,  15:28',  *
                ATTRB=(ASKIP,BRT),COLOR=YELLOW
          DFHMDF POS=(5,4),LENGTH=18,INITIAL='Select an option: ',      *
                ATTRB=(ASKIP,NORM)
