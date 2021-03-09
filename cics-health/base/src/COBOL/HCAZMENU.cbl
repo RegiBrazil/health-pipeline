@@ -1,4 +1,4 @@
-      *    Application menu  - changed April 12, 2018 - regi
+      *    Application menu  - changed March 09, 2021
       *   Look for %regi to chnage msg on first menu
       * Menu for health care application                               *
       *                                                                *
