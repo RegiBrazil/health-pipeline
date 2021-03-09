@@ -18,7 +18,6 @@
 //*-------------------------------------------------------------------*
 //ASMMAP   EXEC PGM=ASMA90,
 // PARM='SYSPARM(MAP),DECK,NOOBJECT'
-//*
 //SYSPRINT DD SYSOUT=*
 //SYSLIB   DD DISP=SHR,DSN=DFH530.CICS.SDFHMAC
 //         DD DISP=SHR,DSN=IBMUSER.GIT.ZMOBILE.BMS
