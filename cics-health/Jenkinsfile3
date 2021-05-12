@@ -16,7 +16,8 @@ def srcGitBranch = null
 def zAppBuildGitRepo = 'https://github.com/RegiBrazil/dbb-zappbuild-1.git'
 // def zAppBuildGitBranch = 'development' // Some important issues are not yet merged into master.
 def zAppBuildGitBranch = 'sandbox3' // Merged on Dec 28 from development.
-def dbbGitRepo = 'https://github.com/IBM/dbb.git'
+// def dbbGitRepo = 'https://github.com/IBM/dbb.git'
+def dbbGitRepo = 'https://github.com/RegiBrazil/dbb'
 def dbbGitBranch = 'master'
 
 // DBB
