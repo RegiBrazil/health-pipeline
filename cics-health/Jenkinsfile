@@ -204,9 +204,16 @@ pipeline {
                         }
                     }
                 }
+
+ //    stop the build by checking the Jenkins build status and add this in the post section of the build stage
+         unstable {
+            script{
+                 error ("zUnit tests failed!!!")
+                  }
+                  }    
+ //
             }
         }
-
 //* ------------------------------------------------------------------------------------------------
         stage('UCD Package') {
             steps {
