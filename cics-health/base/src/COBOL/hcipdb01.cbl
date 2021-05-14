@@ -156,7 +156,7 @@
                 IF DB2-PATIENT-ID = 1
                      MOVE "BAD NAME" to CA-USERID
                 END-IF
-      *           MOVE "02" to CA-NEWFIELD
+                  MOVE "02" to CA-NEWFIELD
       *----------------------------------------------------------------*
            EXIT.
       *----------------------------------------------------------------*
