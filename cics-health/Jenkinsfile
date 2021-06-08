@@ -5,8 +5,8 @@
 // * Dec 21 2020  using https://github.com/RegiBrazil/health-pipeline.git
  // *************************************************************//
 // Agent labels
-// def zOsAgentLabel = env.ZOS_AGENT_LABEL ? env.ZOS_AGENT_LABEL : 'e2e-pipeline'
-def zOsAgentLabel = 'zosZDT'
+def zOsAgentLabel = env.ZOS_AGENT_LABEL ? env.ZOS_AGENT_LABEL : 'e2e-pipeline'
+//  def zOsAgentLabel = 'zosZDT'
 def linuxAgent = 'master'
 
 // GIT repositories
@@ -49,8 +49,8 @@ def verbose = env.VERBOSE && env.VERBOSE == 'true' ? true : false
 def hasBuildFiles = true
 // def buildVerbose = verbose ? '-v' : ''
 // ---------------------------Verbose
-//def buildVerbose = ''
-def buildVerbose = '-v'
+def buildVerbose = ''
+// verbose > def buildVerbose = '-v'
 // ---------------------------Verbose
 @NonCPS
 String getArtifactoruUrl(String artiUrl) {
@@ -204,8 +204,7 @@ pipeline {
                         }
                     }
                 }
-                }
-              }
+
  //    stop the build by checking the Jenkins build status and add this in the post section of the build stage
          unstable {
             script{
@@ -214,7 +213,7 @@ pipeline {
                   }    
  //
             }
-
+        }
 //* ------------------------------------------------------------------------------------------------
         stage('UCD Package') {
             steps {
