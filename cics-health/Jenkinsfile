@@ -1,4 +1,4 @@
-// Updated by Regi
+// Updated by Regi   June 08
 // * mar 11 2021 - Changed z/OS agent to 'zosZDT'  see line 9
 // * Dec 22 2020  Build only what is changed (-i option) see line 27
 // * Dec 22 2020  Using Verbose see line 51
@@ -204,16 +204,9 @@ pipeline {
                         }
                     }
                 }
-
- //    stop the build by checking the Jenkins build status and add this in the post section of the build stage
-         unstable {
-            script{
-                 error ("zUnit tests failed!!!")
-                  }
-                  }    
- //
             }
         }
+
 //* ------------------------------------------------------------------------------------------------
         stage('UCD Package') {
             steps {
@@ -260,3 +253,4 @@ pipeline {
         }
     }
 }
+
