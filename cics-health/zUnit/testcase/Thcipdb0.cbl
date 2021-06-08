@@ -1,5 +1,5 @@
        PROCESS NODLL,NODYNAM,TEST(NOSEP),NOCICS,NOSQL,PGMN(LU)
-      *+---------------------------------------------------------------+
+      *+--------------------------------------------------------------+
       *| Thcipdb0                                                      |
       *| PRODUCT: IBM DEVELOPER FOR Z/OS                               |
       *| COMPONENT: IBM Z/OS AUTOMATED UNIT TESTING FRAMEWORK (ZUNIT)  |
