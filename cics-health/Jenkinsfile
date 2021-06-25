@@ -1,4 +1,4 @@
-// Updated by Regi    June 08
+// Updated by Regi    June 25
 // * mar 11 2021 - Changed z/OS agent to 'zosZDT'  see line 9
 // * Dec 22 2020  Build only what is changed (-i option) see line 27
 // * Dec 22 2020  Using Verbose see line 51
@@ -49,8 +49,8 @@ def verbose = env.VERBOSE && env.VERBOSE == 'true' ? true : false
 def hasBuildFiles = true
 // def buildVerbose = verbose ? '-v' : ''
 // ---------------------------Verbose
-// def buildVerbose = ''
-def buildVerbose = '-v'
+def buildVerbose = ''
+// def buildVerbose = '-v'
 // ---------------------------Verbose
 @NonCPS
 String getArtifactoruUrl(String artiUrl) {
