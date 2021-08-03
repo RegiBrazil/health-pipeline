@@ -1,5 +1,5 @@
-// Updated by Regi    June 25
-// * mar 11 2021 - Changed z/OS agent to 'zosZDT'  see line 9
+// Updated by Regi    August 03 2021
+// * Aug 03 2021 - added new package on UCD as https://github.com/IBM/dbb/tree/master/Pipeline/CreateUCDComponentVersion  line  223
 // * Dec 22 2020  Build only what is changed (-i option) see line 27
 // * Dec 22 2020  Using Verbose see line 51
 // * Dec 21 2020  using https://github.com/RegiBrazil/health-pipeline.git
@@ -220,7 +220,11 @@ pipeline {
    BUILD_OUTPUT_FOLDER = sh (script: "ls ${WORKSPACE}/BUILD-${BUILD_NUMBER}", returnStdout: true).trim()
    dir("${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER}") {
    println "*REGI* Push to UCD Code station"
-    sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb/Pipeline/CreateUCDComponentVersion/dbb-ucd-packaging.groovy --buztool ${ucdBuztool} --component ${ucdComponent} --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} "
+// was ->    sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb/Pipeline/CreateUCDComponentVersion/dbb-ucd-packaging.groovy --buztool ${ucdBuztool} --component ${ucdComponent} --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} "
+    println "*REGI* Gitbranch is ${srcGitBranch} "
+    println "*REGI* pipelineURL is  http://clmweb:18080/view/Demo%20w%20Zunit/job/health-pipeline/ "
+// Example to establish link to the pipeline url and git branch:
+    sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb/Pipeline/CreateUCDComponentVersion/dbb-ucd-packaging.groovy --buztool ${ucdBuztool} --component ${ucdComponent} --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} --pipelineURL http://clmweb:18080/view/Demo%20w%20Zunit/job/health-pipeline/ --gitBranch ${srcGitBranch}"
                             }
                         }
                     }
