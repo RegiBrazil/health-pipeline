@@ -76,7 +76,7 @@ pipeline {
 
             agent { label zOsAgentLabel }
             steps {
-            echo "Clone from GitHub to Rocket Git on zOS"
+            echo "Clone from GitHub to Rocket Git on zOS  -> May fail if using IBM VPN with error>  stderr: ssh: connect to host github.com port 22: Connection timed out"
                 script {
                     if ( verbose ) {
                         echo sh(script: 'env|sort', returnStdout: true)
