@@ -115,9 +115,9 @@ pipeline {
                                                                      url: srcGitRepo,
                                                                      ]]])
  // Regi - print repo and branch
-                    println "*REGI* my repo: ${srcGitRepo} branch: ${srcGitBranch}"
-                    println "*REGI* Groovy scripts from: ${zAppBuildGitRepo} branch: ${zAppBuildGitBranch}"
-                    println "*REGI* More Groovy scripts from: ${dbbGitRepo} branch: ${dbbGitBranch}"
+                    println "*REGI> my repo: ${srcGitRepo} branch: ${srcGitBranch}"
+                    println "*REGI> Groovy scripts from: ${zAppBuildGitRepo} branch: ${zAppBuildGitBranch}"
+                    println "*REGI> More Groovy scripts from: ${dbbGitRepo} branch: ${dbbGitBranch}"
                     }
 
                     dir("dbb-zappbuild") {
