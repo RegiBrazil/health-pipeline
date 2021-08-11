@@ -13,11 +13,10 @@ def linuxAgent = 'master'
 // My Forked repo and branch are below: srcGitRepo  and srcGitBranch
 def srcGitRepo =  null
 def srcGitBranch = null
-// def zAppBuildGitRepo = 'https://github.com/IBM/dbb-zappbuild.git'
+// original >  def zAppBuildGitRepo = 'https://github.com/IBM/dbb-zappbuild.git'
 def zAppBuildGitRepo = 'https://github.com/RegiBrazil/dbb-zappbuild-1.git'
 def zAppBuildGitBranch = 'development' // Some important issues are not yet merged into master.
-// def zAppBuildGitBranch = 'sandbox3' // Merged on Dec 28, 2020 from development.    (broken?)
-// def dbbGitRepo = 'https://github.com/IBM/dbb.git'
+// original > def dbbGitRepo = 'https://github.com/IBM/dbb.git'
 def dbbGitRepo = 'https://github.com/RegiBrazil/dbb'
 def dbbGitBranch = 'master'
 
@@ -79,7 +78,7 @@ pipeline {
 
             agent { label zOsAgentLabel }
             steps {
-            echo "Clone from GitHub to Rocket Git on zOS"
+            echo "Clone from GitHub to Rocket Git on zOS  -> May fail if using IBM VPN with error>  stderr: ssh: connect to host github.com port 22: Connection timed out"
                 script {
                     if ( verbose ) {
                         echo sh(script: 'env|sort', returnStdout: true)
