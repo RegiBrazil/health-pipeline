@@ -1,7 +1,8 @@
 // Updated by Regi
-// Aug 11 - Using cloned https://github.com/IBM/dbb-zappbuild  branch  development -> lines 15 and 17
-// * Dec 22 2020  Build only what is changed (-i option) see line 28
-// * Dec 22 2020  Using Verbose see line 52
+// Aug 11 - Using forked https://github.com/RegiBrazil/dbb-zappbuild-1 from https://github.com/IBM/dbb-zappbuild  branch  development -> lines 17 and 18
+// Aug 11 - Using forked https://github.com/RegiBrazil/dbb from https://github.com/IBM/dbb-zappbuild  branch  master -> lines 21 and 22
+// * Dec 22 2020  Build only what is changed (-i option) see line 32
+// * Dec 22 2020  Using Verbose see line 56
 // * Dec 21 2020  using https://github.com/RegiBrazil/health-pipeline.git
  // *************************************************************//
 // Agent labels
