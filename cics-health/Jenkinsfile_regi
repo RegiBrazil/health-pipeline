@@ -1,5 +1,5 @@
 // Updated by Regi
-// Dec 28 - Using cloned https://github.com/IBM/dbb-zappbuild  branch  sandbox3 se lines 15 and 17
+// Aug 11 - Using cloned https://github.com/IBM/dbb-zappbuild  branch  development -> lines 15 and 17
 // * Dec 22 2020  Build only what is changed (-i option) see line 28
 // * Dec 22 2020  Using Verbose see line 52
 // * Dec 21 2020  using https://github.com/RegiBrazil/health-pipeline.git
@@ -14,8 +14,8 @@ def srcGitRepo =  null
 def srcGitBranch = null
 // def zAppBuildGitRepo = 'https://github.com/IBM/dbb-zappbuild.git'
 def zAppBuildGitRepo = 'https://github.com/RegiBrazil/dbb-zappbuild-1.git'
-// def zAppBuildGitBranch = 'development' // Some important issues are not yet merged into master.
-def zAppBuildGitBranch = 'sandbox3' // Merged on Dec 28 from development.
+def zAppBuildGitBranch = 'development' // Some important issues are not yet merged into master.
+// def zAppBuildGitBranch = 'sandbox3' // Merged on Dec 28, 2020 from development.    (broken?)
 // def dbbGitRepo = 'https://github.com/IBM/dbb.git'
 def dbbGitRepo = 'https://github.com/RegiBrazil/dbb'
 def dbbGitBranch = 'master'
