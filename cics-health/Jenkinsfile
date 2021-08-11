@@ -1,7 +1,7 @@
 // Updated by Regi    August 10 2021
 // * Aug 03 2021 - added new package on UCD as https://github.com/IBM/dbb/tree/master/Pipeline/CreateUCDComponentVersion  line  223
 // * Dec 22 2020  Build only what is changed (-i option) see line 27
-// * Dec 22 2020  Using Verbose see line 51
+// * Dec 22 2020  Using Verbose see line 54
 // * Dec 21 2020  using https://github.com/RegiBrazil/health-pipeline.git
  // *************************************************************//
 // Agent labels
@@ -14,8 +14,8 @@ def linuxAgent = 'master'
 def srcGitRepo =  null
 def srcGitBranch = null
 def zAppBuildGitRepo = 'https://github.com/IBM/dbb-zappbuild.git'
-def zAppBuildGitBranch = 'development' // Some important issues are not yet merged into master.
-// def zAppBuildGitBranch = 'master'
+// def zAppBuildGitBranch = 'development' // Some important issues are not yet merged into master.
+def zAppBuildGitBranch = 'master'
 def dbbGitRepo = 'https://github.com/IBM/dbb.git'
 def dbbGitBranch = 'master'
 
@@ -50,8 +50,8 @@ def verbose = env.VERBOSE && env.VERBOSE == 'true' ? true : false
 def hasBuildFiles = true
 // def buildVerbose = verbose ? '-v' : ''
 // ---------------------------Verbose
-def buildVerbose = ''
-// def buildVerbose = '-v'
+// def buildVerbose = ''
+def buildVerbose = '-v'
 // ---------------------------Verbose
 @NonCPS
 String getArtifactoruUrl(String artiUrl) {
