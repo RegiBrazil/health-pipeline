@@ -49,6 +49,7 @@ def ucdSite = 'Urbancode server'
 def verbose = env.VERBOSE && env.VERBOSE == 'true' ? true : false
 
 // Private
+def idzCodeReviewFlag = false
 def hasBuildFiles = true
 // def buildVerbose = verbose ? '-v' : ''
 // ---------------------------Verbose
@@ -166,6 +167,8 @@ pipeline {
                         if ( env.GROOVYZ_BUILD_EXTRA_OPTS != null ) {
                             dbbGroovyzOpts = env.GROOVYZ_BUILD_EXTRA_OPTS
                         }
+ // Added Code review flag
+                        idzCodeReviewFlag = env.RUN_IDZ_CODE_REVIEW && env.RUN_IDZ_CODE_REVIEW == 'true' ? true : false
                         dbbHome = env.DBB_HOME
                         dbbUrl = env.DBB_URL
                         dbbHlq = env.DBB_HLQ
