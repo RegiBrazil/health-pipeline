@@ -228,7 +228,7 @@ pipeline {
                         def crContent = null
                         node( zOsAgentLabel ) {
                             BUILD_OUTPUT_FOLDER = sh (script: "ls ${WORKSPACE}/BUILD-${BUILD_NUMBER}  | grep build | sort -u", returnStdout: true).trim()
-                            sh "$DBB_HOME/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb/Pipeline/RunIDZCodeReview/RunCodeReview.groovy --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -cr  ${WORKSPACE}/cics-health/cr-rules/CodeReviewRules.dat -ccr  ${WORKSPACE}/cics-health/cr-rules/CodeReviewRules.ccr"
+                            sh "$DBB_HOME/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb/Pipeline/RunIDZCodeReview/RunCodeReview.groovy --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -cr  ${WORKSPACE}/cics-health/cics-health/cr-rules/CodeReviewRules.dat -ccr  ${WORKSPACE}/cics-health/cics-health/cr-rules/CodeReviewRules.ccr"
                             dir ("${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER}") {
                                 def crJunitFile = fileExists "CodeReviewJUNIT.xml"
                                 if ( crJunitFile ) {
