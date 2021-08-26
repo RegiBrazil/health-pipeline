@@ -1,4 +1,4 @@
-// Updated by Regi
+// Updated by Regi  - Repos all on my own GitHub (dont depend external repos)
 // Aug 11 - Using forked https://github.com/RegiBrazil/dbb-zappbuild-1 from https://github.com/IBM/dbb-zappbuild  branch  development -> lines 17 and 18
 // Aug 11 - Using forked https://github.com/RegiBrazil/dbb from https://github.com/IBM/dbb-zappbuild  branch  master -> lines 21 and 22
 // * Dec 22 2020  Build only what is changed (-i option) see line 32
