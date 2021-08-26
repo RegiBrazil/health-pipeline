@@ -139,7 +139,10 @@ pipeline {
                             checkout([$class: 'GitSCM', branches: [[name: dbbGitBranch]],
                               doGenerateSubmoduleConfigurations: false,
                               extensions: [
-                                       [$class: 'SparseCheckoutPaths',  sparseCheckoutPaths:[[$class:'SparseCheckoutPath', path:'Pipeline/CreateUCDComponentVersion/']]]
+                                       [$class: 'SparseCheckoutPaths',  sparseCheckoutPaths:[
+                                          [$class:'SparseCheckoutPath', path:'Pipeline/CreateUCDComponentVersion/'],
+                                          [$class:'SparseCheckoutPath', path:'Pipeline/RunIDZCodeReview/']
+                                       ]]
                                     ],
                               submoduleCfg: [],
                             userRemoteConfigs: [[
