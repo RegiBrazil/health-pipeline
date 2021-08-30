@@ -179,8 +179,7 @@ pipeline {
                         def dbbZunitCccOpts = ''
                         if ( env.CCC_HOST != null && env.CCC_PORT != null && env.CCC_FOLDER != null ) {
                             dbbZunitCccOpts="-cc -cch ${env.CCC_HOST} -ccp ${env.CCC_PORT}"
-                            cccFolder = env.CCC_FOLDER
-                        }
+                            cccFolder = env.CCC_FOLDER }
  // Added Code review flag
                         idzCodeReviewFlag = env.RUN_IDZ_CODE_REVIEW && env.RUN_IDZ_CODE_REVIEW == 'true' ? true : false
                         dbbHome = env.DBB_HOME
@@ -188,7 +187,7 @@ pipeline {
                         dbbHlq = env.DBB_HLQ
   // Regi - print HLQ and DBB Home
       println "*REGI* HLQ:${dbbHlq} DBB Home: ${dbbHome}"
-      println "*REGICC* cccFolder = ${cccFolder}"
+      println "*REGICC* cccFolder = ${CCC_FOLDER}"
       println "*REGICC* $dbbZunitCccOpts"
  // Regi - print the path where the Jenkins workspace is created
       println "*REGI* Jenkins workspace created at: ${WORKSPACE} "
