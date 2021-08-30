@@ -179,8 +179,7 @@ pipeline {
                         def dbbZunitCccOpts = ''
                         if ( env.CCC_HOST != null && env.CCC_PORT != null && env.CCC_FOLDER != null ) {
                             dbbZunitCccOpts="-cc -cch ${env.CCC_HOST} -ccp ${env.CCC_PORT}"
- // was                            cccFolder = env.CCC_FOLDER
-                            CCC_Folder = env.CCC_FOLDER
+                            cccFolder = env.CCC_FOLDER
                         }
  // Added Code review flag
                         idzCodeReviewFlag = env.RUN_IDZ_CODE_REVIEW && env.RUN_IDZ_CODE_REVIEW == 'true' ? true : false
