@@ -1,0 +1,330 @@
+// Updated by Regi    Repos all on my own GitHub (dont depend external repos)
+// August 30 2021 for CODE COVERAGE - Line xxx
+// August 25 2021 for CODE REVIEW - Line 213 - using developer branch line 21
+// See article  https://developer.ibm.com/tutorials/build-a-pipeline-with-jenkins-dependency-based-build-and-urbancode-deploy//#step-5-configure-the-pipeline-for-idz-code-review
+// Aug 11 - Using forked https://github.com/RegiBrazil/dbb-zappbuild-1 from https://github.com/IBM/dbb-zappbuild  branch  development -> lines 17 and 18
+// Aug 11 - Using forked https://github.com/RegiBrazil/dbb from https://github.com/IBM/dbb-zappbuild  branch  master -> lines 21 and 22
+// * Dec 22 2020  Build only what is changed (-i option) see line 32
+// * Dec 22 2020  Using Verbose see line 56
+// * Dec 21 2020  using https://github.com/RegiBrazil/health-pipeline.git
+ // *************************************************************//
+// Agent labels
+def zOsAgentLabel = env.ZOS_AGENT_LABEL ? env.ZOS_AGENT_LABEL : 'e2e-pipeline'
+def linuxAgent = 'master'
+
+// GIT repositories
+// My Forked repo and branch are below: srcGitRepo  and srcGitBranch
+def srcGitRepo =  null
+def srcGitBranch = null
+// original >  def zAppBuildGitRepo = 'https://github.com/IBM/dbb-zappbuild.git'
+def zAppBuildGitRepo = 'https://github.com/RegiBrazil/dbb-zappbuild-1.git'
+def zAppBuildGitBranch = 'development' // Some important issues are not yet merged into master.
+// original > def dbbGitRepo = 'https://github.com/IBM/dbb.git'
+def dbbGitRepo = 'https://github.com/RegiBrazil/dbb'
+def dbbGitBranch = 'master'
+
+// DBB
+// Regi ----------------------------- Build type
+//  -i: incremental
+//  -f: full
+//  -c: only changed source
+def dbbHome=null
+def dbbUrl=null
+def dbbHlq=null
+def dbbBuildType='-i'
+// def dbbBuildType='-f'
+def dbbGroovyzOpts= ''
+def dbbBuildExtraOpts= ''
+
+// Artifactory
+// def artiCredentialsId = 'artifactory_id'
+def artiCredentialsId = null
+
+// UCD
+def ucdApplication = 'A HC zOS COBOL CICS'
+def ucdProcess = 'Deploy HC to CICS + MF to Windows'
+def ucdComponent = 'HC_CICS'
+def ucdEnv = 'TEST'
+def ucdSite = 'Urbancode server'
+
+// Verbose
+def verbose = env.VERBOSE && env.VERBOSE == 'true' ? true : false
+
+// Private
+def idzCodeReviewFlag = false
+def hasBuildFiles = true
+// def buildVerbose = verbose ? '-v' : ''
+// ---------------------------Verbose
+def buildVerbose = ''
+// verbose > def buildVerbose = '-v'
+// ---------------------------Verbose
+@NonCPS
+String getArtifactoruUrl(String artiUrl) {
+    // UCD always add /artifactory
+    def exp =  /(.*)\\/artifactory?$/
+    def match = artiUrl =~ exp
+    if (match.find()) {
+        return match.group(1)
+    }
+    return artiUrl
+}
+
+
+pipeline {
+
+    agent { label linuxAgent }
+
+    options { skipDefaultCheckout(true) }
+
+    stages {
+//* ------------------------------------------------------------------------------------------------
+        stage('Git Clone/Refresh') {
+
+            agent { label zOsAgentLabel }
+            steps {
+            echo "Clone from GitHub to Rocket Git on zOS  -> May fail if using IBM VPN with error>  stderr: ssh: connect to host github.com port 22: Connection timed out"
+            echo "All REPOS are on --> github.com/RegiBrazil "
+                script {
+                    if ( verbose ) {
+                        echo sh(script: 'env|sort', returnStdout: true)
+                    }
+
+                    if ( env.DBB_HOME == null )
+                        error("DBB_HOME is not defined !!!")
+                    if ( env.DBB_URL == null )
+                        error("DBB_URL is not defined !!!")
+                    if ( env.DBB_HLQ == null )
+                        error("DBB_HLQ is not defined !!!")
+   // Regi - NO Artifactory
+  //                  if ( env.ARTIFACTORY_URL == null )
+  //                      error("ARTIFACTORY_URL is not defined !!!")
+  //                  if ( env.ARTIFACTORY_REPO_PATH == null )
+  //                      error("ARTIFACTORY_REPO_PATH is not defined !!!")
+                    if ( env.UCD_BUZTOOL_PATH == null )
+                        error("UCD_BUZTOOL_PATH is not defined !!!")
+
+                    dir('cics-health') {
+                        sh(script: 'rm -f .git/info/sparse-checkout', returnStdout: true)
+// My Forked repo and branch are below: srcGitRepo  and srcGitBranch
+                        srcGitRepo = scm.getUserRemoteConfigs()[0].getUrl()
+                        srcGitBranch = scm.branches[0].name
+                        def scmVars = null
+                        scmVars = checkout([$class: 'GitSCM', branches: [[name: srcGitBranch]],
+                                                doGenerateSubmoduleConfigurations: false,
+                                                extensions: [
+                                                [$class: 'SparseCheckoutPaths',
+                                                   sparseCheckoutPaths:[[$class:'SparseCheckoutPath',
+                                                   path:'cics-health/']]]
+                                                ],
+                                                submoduleCfg: [],
+                                                userRemoteConfigs: [[
+                                                                     url: srcGitRepo,
+                                                                     ]]])
+ // Regi - print repo and branch
+                    println "*REGI* my repo: ${srcGitRepo} branch: ${srcGitBranch}"
+                    println "*REGI* Groovy scripts from: ${zAppBuildGitRepo} branch: ${zAppBuildGitBranch}"
+                    println "*REGI* More Groovy scripts from: ${dbbGitRepo} branch: ${dbbGitBranch}"
+                    }
+
+                    dir("dbb-zappbuild") {
+                        sh(script: 'rm -f .git/info/sparse-checkout', returnStdout: true)
+                        def scmVars =
+                            checkout([$class: 'GitSCM', branches: [[name: zAppBuildGitBranch]],
+                              doGenerateSubmoduleConfigurations: false,
+                              submoduleCfg: [],
+                            userRemoteConfigs: [[
+                                url: zAppBuildGitRepo,
+                            ]]])
+                    }
+
+                    dir("dbb") {
+                        sh(script: 'rm -f .git/info/sparse-checkout', returnStdout: true)
+                        def scmVars =
+                            checkout([$class: 'GitSCM', branches: [[name: dbbGitBranch]],
+                              doGenerateSubmoduleConfigurations: false,
+                              extensions: [
+                                       [$class: 'SparseCheckoutPaths',  sparseCheckoutPaths:[
+                                          [$class:'SparseCheckoutPath', path:'Pipeline/CreateUCDComponentVersion/'],
+                                          [$class:'SparseCheckoutPath', path:'Pipeline/RunIDZCodeReview/']
+                                       ]]
+                                    ],
+                              submoduleCfg: [],
+                            userRemoteConfigs: [[
+                                url: dbbGitRepo,
+                            ]]])
+                    }
+                }
+            }
+        }
+
+//* ------------------------------------------------------------------------------------------------
+//        stage('DBB Build & UnitTest') {
+        stage('DBB Build & UnitTest  & Code Coverage') {
+            steps {
+                echo "Perform the Build and Unit Tests on required changes"
+                script{
+                    def zUnitContents = []
+// added cc
+                    def cccFolder = null
+                    node( zOsAgentLabel ) {
+                        if ( env.DBB_BUILD_EXTRA_OPTS != null ) {
+                           dbbBuildExtraOpts = env.DBB_BUILD_EXTRA_OPTS
+                        }
+                        if ( env.DBB_BUILD_TYPE != null ) {
+                            dbbBuildType = env.DBB_BUILD_TYPE
+                        }
+                        if ( env.GROOVYZ_BUILD_EXTRA_OPTS != null ) {
+                            dbbGroovyzOpts = env.GROOVYZ_BUILD_EXTRA_OPTS
+                        }
+// added cc
+                        def dbbZunitCccOpts = ''
+                        if ( env.CCC_HOST != null && env.CCC_PORT != null && env.CCC_FOLDER != null ) {
+                            dbbZunitCccOpts="-cc -cch ${env.CCC_HOST} -ccp ${env.CCC_PORT}"
+                            cccFolder = env.CCC_FOLDER
+                        }
+ // Added Code review flag
+                        idzCodeReviewFlag = env.RUN_IDZ_CODE_REVIEW && env.RUN_IDZ_CODE_REVIEW == 'true' ? true : false
+                        dbbHome = env.DBB_HOME
+                        dbbUrl = env.DBB_URL
+                        dbbHlq = env.DBB_HLQ
+  // Regi - print HLQ and DBB Home
+      println "*REGI* HLQ:${dbbHlq} DBB Home: ${dbbHome}"
+ // Regi - print the path where the Jenkins workspace is created
+      println "*REGI* Jenkins workspace created at: ${WORKSPACE} "
+
+     sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-health --sourceDir ${WORKSPACE}/cics-health  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.HEALTH --url $dbbUrl -pw ADMIN $dbbBuildType $buildVerbose $dbbBuildExtraOpts"
+                        def files = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/buildList.txt")
+                        // Do not enter into some steps if nothing in the build list
+                        hasBuildFiles = files.length > 0 && files[0].length > 0
+
+                        def zUnitFiles = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/*.zunit.report.log")
+                        zUnitFiles.each { zUnit ->
+      println "Process zUnit: $zUnit.path"
+                            def zUnitContent = readFile file: zUnit.path
+                            zUnitContents << zUnitContent
+                        }
+                    }
+                    zUnitContents.each { zUnitContent ->
+                        writeFile file: '/tmp/zUnit.zunit', text:zUnitContent
+                        def rc = sh (returnStatus: true, script: '''#!/bin/sh
+                        curl --silent https://raw.githubusercontent.com/ibm/dbb-pipeline/master/cics-genapp/zUnit/xsl/AZUZ2J30.xsl -o /tmp/AZUZ2J30.xsl
+                            xsltproc /tmp/AZUZ2J30.xsl /tmp/zUnit.zunit > ${WORKSPACE}/zUnit.xml
+                        ''')
+                        junit "zUnit.xml"
+                    }
+// added cc
+      println "*REGI* CCC_FOLDER  at: ${CCC_FOLDER} "
+                    if ( cccFolder != null ) {
+                        env.CCC_FOLDER = cccFolder
+                        sh (returnStatus: true, script: '''#!/bin/sh
+                            mkdir -p ${WORKSPACE}/BUILD-${BUILD_NUMBER}
+                            mv -f ${CCC_FOLDER}/*.pdf ${WORKSPACE}/BUILD-${BUILD_NUMBER}
+                            mv -f ${CCC_FOLDER}/*.cczip ${WORKSPACE}/BUILD-${BUILD_NUMBER}
+                        ''')
+                        dir("${WORKSPACE}/BUILD-${BUILD_NUMBER}") {
+                            archiveArtifacts allowEmptyArchive: true,
+                                            artifacts: "*.pdf,*.cczip"
+                                            onlyIfSuccessful: false
+                        }
+                    }
+//  end cc
+                }
+            }
+            post {
+                always {
+                    node( zOsAgentLabel ) {
+                        dir("${WORKSPACE}/BUILD-${BUILD_NUMBER}") {
+                            archiveArtifacts allowEmptyArchive: true,
+                                            artifacts: '**/*.log,**/*.json,**/*.html',
+                                            excludes: '**/*clist',
+                                            onlyIfSuccessful: false
+                        }
+                    }
+                }
+ // added unstable
+                unstable {
+                    script{
+                         error ("zUnit tests failed!!!")
+                    }
+                }
+// end unstable
+            }
+        }
+
+//* ------------------------------------------------------------------------------------------------
+       stage("IDz Code Review") {
+            when  { expression { return  idzCodeReviewFlag == true  } }
+            steps {
+            echo "Perform the IDz Code Review "
+                script{
+                    if ( hasBuildFiles ) {
+                        def crContent = null
+                        node( zOsAgentLabel ) {
+                            BUILD_OUTPUT_FOLDER = sh (script: "ls ${WORKSPACE}/BUILD-${BUILD_NUMBER}  | grep build | sort -u", returnStdout: true).trim()
+                            sh "$DBB_HOME/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb/Pipeline/RunIDZCodeReview/RunCodeReview.groovy --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} -cr  ${WORKSPACE}/cics-health/cics-health/cr-rules/CodeReviewRules.dat -ccr  ${WORKSPACE}/cics-health/cics-health/cr-rules/CodeReviewRules.ccr"
+                            dir ("${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER}") {
+                                def crJunitFile = fileExists "CodeReviewJUNIT.xml"
+                                if ( crJunitFile ) {
+                                    crContent = readFile file: "CodeReviewJUNIT.xml"
+                                    archiveArtifacts allowEmptyArchive: true,
+                                            artifacts: '*.csv,*.xml',
+                                            onlyIfSuccessful: false
+                                }
+                            }
+                        }
+                        if ( crContent ) {
+                            sh "mkdir -p ${WORKSPACE}/BUILD-${BUILD_NUMBER}"
+                            writeFile file: "${WORKSPACE}/BUILD-${BUILD_NUMBER}/CodeReviewJUNIT.xml", text:crContent.trim()
+                            junit allowEmptyResults: true, testResults: "BUILD-${BUILD_NUMBER}/CodeReviewJUNIT.xml"
+                        }
+                    }
+                }
+            }
+        }
+//* ------------------------------------------------------------------------------------------------
+//* ------------------------------------------------------------------------------------------------
+        stage('UCD Package') {
+            steps {
+                echo "Move the binaries created by build to UCD to be deployed"
+                script {
+                    node( zOsAgentLabel ) {
+                        if ( hasBuildFiles ) {
+                            def ucdBuztool = env.UCD_BUZTOOL_PATH
+ // Regi - print UCD Buzztool path
+         println "*REGI* UCD BUZTOOL_PATH : ${ucdBuztool} "
+   BUILD_OUTPUT_FOLDER = sh (script: "ls ${WORKSPACE}/BUILD-${BUILD_NUMBER}", returnStdout: true).trim()
+   dir("${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER}") {
+   println "*REGI* Push to UCD Code station"
+    sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb/Pipeline/CreateUCDComponentVersion/dbb-ucd-packaging.groovy --buztool ${ucdBuztool} --component ${ucdComponent} --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER}/${BUILD_OUTPUT_FOLDER} "
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+//* ------------------------------------------------------------------------------------------------
+        stage('UCD Deploy') {
+            steps {
+                echo "Invoke UCD and wait for the deplyment to be completed"
+   println "*REGI* Deploy Appl: ${ucdApplication} Process: ${ucdProcess}  to Environmnet :${ucdEnv}  on CICSTS53"
+                script{
+                    if ( hasBuildFiles ) {
+                        script{
+                            step(
+                                  [$class: 'UCDeployPublisher',
+                                    deploy: [
+                                        deployApp: ucdApplication,
+                                        deployDesc: 'Requested from Jenkins',
+                                        deployEnv: ucdEnv,
+                                        deployOnlyChanged: false,
+                                        deployProc: ucdProcess,
+                                        deployVersions: ucdComponent + ':latest'],
+                                    siteName: ucdSite])
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
