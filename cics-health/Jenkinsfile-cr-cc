@@ -55,8 +55,8 @@ def idzCodeReviewFlag = false
 def hasBuildFiles = true
 // def buildVerbose = verbose ? '-v' : ''
 // ---------------------------Verbose
-def buildVerbose = ''
-// verbose > def buildVerbose = '-v'
+// def buildVerbose = ''
+def buildVerbose = '-v'
 // ---------------------------Verbose
 @NonCPS
 String getArtifactoruUrl(String artiUrl) {
@@ -83,7 +83,7 @@ pipeline {
             agent { label zOsAgentLabel }
             steps {
             echo "Clone from GitHub to Rocket Git on zOS  -> May fail if using IBM VPN with error>  stderr: ssh: connect to host github.com port 22: Connection timed out"
-            echo "All REPOS are on --> github.com/RegiBrazil "
+            echo "2 REPOS are on IBM GitHub: github.com/IBM/dbb-zappbuild.git  and github.com/IBM/dbb.git "
                 script {
                     if ( verbose ) {
                         echo sh(script: 'env|sort', returnStdout: true)
@@ -188,6 +188,8 @@ pipeline {
                         dbbHlq = env.DBB_HLQ
   // Regi - print HLQ and DBB Home
       println "*REGI* HLQ:${dbbHlq} DBB Home: ${dbbHome}"
+      println "*REGICC* cccFolder = ${cccFolder}"
+      println "*REGICC* $dbbZunitCccOpts"
  // Regi - print the path where the Jenkins workspace is created
       println "*REGI* Jenkins workspace created at: ${WORKSPACE} "
 
