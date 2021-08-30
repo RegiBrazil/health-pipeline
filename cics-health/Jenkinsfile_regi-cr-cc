@@ -192,7 +192,7 @@ pipeline {
       println "*REGI* Jenkins workspace created at: ${WORKSPACE} "
 
  // add dbbZunitCccOpts  for cc
-     sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-health --sourceDir ${WORKSPACE}/cics-health  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.HEALTH --url $dbbUrl -pw ADMIN $dbbBuildType $buildVerbose $dbbZunitCccOpts $dbbBuildExtraOpts"
+     sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-health --sourceDir ${WORKSPACE}/cics-health  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.HEALTH --url $dbbUrl -pw ADMIN -d $dbbBuildType $buildVerbose $dbbZunitCccOpts $dbbBuildExtraOpts"
                         def files = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/buildList.txt")
                         // Do not enter into some steps if nothing in the build list
                         hasBuildFiles = files.length > 0 && files[0].length > 0
