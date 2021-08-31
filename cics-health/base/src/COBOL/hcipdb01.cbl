@@ -1,7 +1,7 @@
       *****************************************************************
       * Used on CICS trx HCAZ
       * invoked hen selecting option 2 - Inquire Patient
-      * Changed HCIPDB01 August 30 2021 -    19:53
+      * Changed HCIPDB01 August 31 2021 -    10:01
       *  Look for %bug to introduce bugs
       ****************************************************************
        IDENTIFICATION DIVISION.
