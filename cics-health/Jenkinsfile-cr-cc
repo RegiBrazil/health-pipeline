@@ -1,5 +1,5 @@
 // Updated by Regi    Repos all on my own GitHub (2 external repos)
-// August 30 2021 for CODE COVERAGE - Line xxx
+// August 30 2021 for CODE COVERAGE - Line 166
 // August 25 2021 for CODE REVIEW - Line 213 - using developer branch line 21
 // See article  https://developer.ibm.com/tutorials/build-a-pipeline-with-jenkins-dependency-based-build-and-urbancode-deploy//#step-5-configure-the-pipeline-for-idz-code-review
 // Aug 11 - Using forked https://github.com/RegiBrazil/dbb-zappbuild-1 from https://github.com/IBM/dbb-zappbuild  branch  development -> lines 17 and 18
@@ -187,7 +187,8 @@ pipeline {
                         dbbHlq = env.DBB_HLQ
   // Regi - print HLQ and DBB Home
       println "*REGI* HLQ:${dbbHlq} DBB Home: ${dbbHome}"
- //     println "*REGICC* CCC_FOLDER = ${cccFolder}"
+  // Regi - print CC values
+      println "*REGICC* CCC_FOLDER = ${cccFolder}"
       println "*REGICC* $dbbZunitCccOpts"
  // Regi - print the path where the Jenkins workspace is created
       println "*REGI* Jenkins workspace created at: ${WORKSPACE} "
@@ -214,7 +215,6 @@ pipeline {
                         junit "zUnit.xml"
                     }
 // added cc
-//      println "*REGI* CCC_FOLDER  at: ${CCC_FOLDER} "
                     if ( cccFolder != null ) {
                         env.CCC_FOLDER = cccFolder
                         sh (returnStatus: true, script: '''#!/bin/sh
@@ -255,6 +255,7 @@ pipeline {
         }
 
 //* ------------------------------------------------------------------------------------------------
+/* ----------> Removed Code Review since RC non 0 (9)
        stage("IDz Code Review") {
             when  { expression { return  idzCodeReviewFlag == true  } }
             steps {
@@ -284,6 +285,7 @@ pipeline {
                 }
             }
         }
+ */
 //* ------------------------------------------------------------------------------------------------
 //* ------------------------------------------------------------------------------------------------
         stage('UCD Package') {
