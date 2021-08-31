@@ -187,7 +187,8 @@ pipeline {
                         dbbHlq = env.DBB_HLQ
   // Regi - print HLQ and DBB Home
       println "*REGI* HLQ:${dbbHlq} DBB Home: ${dbbHome}"
-      println "*REGICC* cccFolder = ${CCC_FOLDER}"
+ //     println "*REGICC* cccFolder = ${CCC_FOLDER}"
+      println "*REGICC* CCC_FOLDER = ${cccFolder}"
       println "*REGICC* $dbbZunitCccOpts"
  // Regi - print the path where the Jenkins workspace is created
       println "*REGI* Jenkins workspace created at: ${WORKSPACE} "
