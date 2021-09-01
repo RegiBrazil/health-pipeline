@@ -1,5 +1,5 @@
 // Updated by Regi    Repos all on my own GitHub (2 external repos)
-// August 30 2021 for CODE COVERAGE - Line 166
+// Set 010 2021 for CODE COVERAGE - Line 259
 // August 25 2021 for CODE REVIEW - Line 213 - using developer branch line 21
 // See article  https://developer.ibm.com/tutorials/build-a-pipeline-with-jenkins-dependency-based-build-and-urbancode-deploy//#step-5-configure-the-pipeline-for-idz-code-review
 // Aug 11 - Using forked https://github.com/RegiBrazil/dbb-zappbuild-1 from https://github.com/IBM/dbb-zappbuild  branch  development -> lines 17 and 18
@@ -158,13 +158,11 @@ pipeline {
         }
 
 //* ------------------------------------------------------------------------------------------------
-        stage('DBB Build & UnitTest  & Code Coverage') {
+        stage('DBB Build & UnitTest') {
             steps {
                 echo "Perform the Build and Unit Tests on required changes"
                 script{
                     def zUnitContents = []
-// added cc
-                    def cccFolder = null
                     node( zOsAgentLabel ) {
                         if ( env.DBB_BUILD_EXTRA_OPTS != null ) {
                            dbbBuildExtraOpts = env.DBB_BUILD_EXTRA_OPTS
@@ -175,11 +173,6 @@ pipeline {
                         if ( env.GROOVYZ_BUILD_EXTRA_OPTS != null ) {
                             dbbGroovyzOpts = env.GROOVYZ_BUILD_EXTRA_OPTS
                         }
-// added cc
-                        def dbbZunitCccOpts = ''
-                        if ( env.CCC_HOST != null && env.CCC_PORT != null && env.CCC_FOLDER != null ) {
-                            dbbZunitCccOpts="-cc -cch ${env.CCC_HOST} -ccp ${env.CCC_PORT}"
-                            cccFolder = env.CCC_FOLDER }
  // Added Code review flag
                         idzCodeReviewFlag = env.RUN_IDZ_CODE_REVIEW && env.RUN_IDZ_CODE_REVIEW == 'true' ? true : false
                         dbbHome = env.DBB_HOME
@@ -187,14 +180,10 @@ pipeline {
                         dbbHlq = env.DBB_HLQ
   // Regi - print HLQ and DBB Home
       println "*REGI* HLQ:${dbbHlq} DBB Home: ${dbbHome}"
-  // Regi - print CC values
-      println "*REGICC* CCC_FOLDER = ${cccFolder}"
-      println "*REGICC* $dbbZunitCccOpts"
  // Regi - print the path where the Jenkins workspace is created
       println "*REGI* Jenkins workspace created at: ${WORKSPACE} "
 
- // add dbbZunitCccOpts  for cc
-     sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-health --sourceDir ${WORKSPACE}/cics-health  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.HEALTH --url $dbbUrl -pw ADMIN -d $dbbBuildType $buildVerbose $dbbZunitCccOpts $dbbBuildExtraOpts"
+     sh "$dbbHome/bin/groovyz $dbbGroovyzOpts ${WORKSPACE}/dbb-zappbuild/build.groovy --logEncoding UTF-8 -w ${WORKSPACE} --application cics-health --sourceDir ${WORKSPACE}/cics-health  --workDir ${WORKSPACE}/BUILD-${BUILD_NUMBER} --hlq ${dbbHlq}.HEALTH --url $dbbUrl -pw ADMIN -d $dbbBuildType $buildVerbose $dbbBuildExtraOpts"
                         def files = findFiles(glob: "**BUILD-${BUILD_NUMBER}/**/buildList.txt")
                         // Do not enter into some steps if nothing in the build list
                         hasBuildFiles = files.length > 0 && files[0].length > 0
@@ -214,21 +203,6 @@ pipeline {
                         ''')
                         junit "zUnit.xml"
                     }
-// added cc
-                    if ( cccFolder != null ) {
-                        env.CCC_FOLDER = cccFolder
-                        sh (returnStatus: true, script: '''#!/bin/sh
-                            mkdir -p ${WORKSPACE}/BUILD-${BUILD_NUMBER}
-                            mv -f ${CCC_FOLDER}/*.pdf ${WORKSPACE}/BUILD-${BUILD_NUMBER}
-                            mv -f ${CCC_FOLDER}/*.cczip ${WORKSPACE}/BUILD-${BUILD_NUMBER}
-                        ''')
-                        dir("${WORKSPACE}/BUILD-${BUILD_NUMBER}") {
-                            archiveArtifacts allowEmptyArchive: true,
-                                            artifacts: "*.pdf,*.cczip"
-                                            onlyIfSuccessful: false
-                        }
-                    }
-//  end cc
                 }
             }
             post {
@@ -255,6 +229,39 @@ pipeline {
         }
 
 //* ------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------
+		stage('Code coverage gating') {
+			steps {
+				script{
+                   echo "Verify the percentage of the was covered by the previous test case"
+                println "on Linux IDz is listening for the Code Coverage"
+// was             	if (needTest) {
+                           if ( hasBuildFiles ) {
+					if (needTest) {
+					    node( linuxAgent ) {
+							sh "cp ${WORKSPACE}/../Testcases/results/* ${WORKSPACE}/BUILD-${BUILD_NUMBER}/ccresults/"
+							int ccpercent = sh (script: "$CCDIR/headless-cc/ccresults.sh ${WORKSPACE}/BUILD-${BUILD_NUMBER}/ccresults", returnStdout: true)
+							println "${ccpercent} + ccpercent"
+							if (ccpercent < 40) {
+								println "This build is unstable - the code coverage is less than 40%"
+								currentBuild.result = "UNSTABLE"
+							                    }
+						               }
+					              }
+				      }
+			      }
+			post {
+				always {
+					node( linuxAgent ) {
+						dir("${WORKSPACE}/BUILD-${BUILD_NUMBER}/ccresults") {
+							archiveArtifacts allowEmptyArchive: true,
+											artifacts: '*cczip',
+											onlyIfSuccessful: false
+						                                                    }
+					                   }
+				        }
+			     }
+	                                      }
 /* ----------> Removed Code Review since RC non 0 (9)
        stage("IDz Code Review") {
             when  { expression { return  idzCodeReviewFlag == true  } }
