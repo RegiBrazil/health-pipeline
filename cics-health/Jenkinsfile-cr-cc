@@ -55,8 +55,8 @@ def idzCodeReviewFlag = false
 def hasBuildFiles = true
 // def buildVerbose = verbose ? '-v' : ''
 // ---------------------------Verbose
-def buildVerbose = ''
-//  def buildVerbose = '-v'
+// def buildVerbose = ''
+def buildVerbose = '-v'
 // ---------------------------Verbose
 @NonCPS
 String getArtifactoruUrl(String artiUrl) {

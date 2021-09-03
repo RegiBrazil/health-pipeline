@@ -213,7 +213,7 @@ pipeline {
                         junit "zUnit.xml"
                     }
 // added cc
-      println "*REGI* CCC_FOLDER  at: ${CCC_FOLDER} "
+      println "*REGICC* CCC_FOLDER  at: ${CCC_FOLDER} "
                     if ( cccFolder != null ) {
                         env.CCC_FOLDER = cccFolder
                         sh (returnStatus: true, script: '''#!/bin/sh
