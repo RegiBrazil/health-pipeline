@@ -84,6 +84,8 @@ pipeline {
             steps {
             echo "cics-health > Clone from GitHub to Rocket Git on zOS  -> May fail if using IBM VPN with error>  stderr: ssh: connect to host github.com port 22: Connection timed out"
             echo "All REPOS are on --> github.com/RegiBrazil "
+            echo "See details at https://developer.ibm.com/tutorials/build-a-pipeline-with-jenkins-dependency-based-build-and-urbancode-deploy/#1-configure-code-coverage-headless-daemon  "
+            echo "Be sure that code coverage headless is running at port 8006: cd /Appliance/IDz14.2.1/headless-cc  and  ./codecov -startdaemon -port=8006 -exportertype=CCPDF -output=/opt/cc/output "
                 script {
                     if ( verbose ) {
                         echo sh(script: 'env|sort', returnStdout: true)
