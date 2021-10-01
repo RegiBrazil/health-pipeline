@@ -1,4 +1,4 @@
-// Updated by Regi    2 Repos on IBM  GitHub
+// Updated by Regi    2 Repos on my GitHub
 // August 25 2021 for CODE REVIEW - Line 212 - using developer branch line 20
 // See article  https://developer.ibm.com/tutorials/build-a-pipeline-with-jenkins-dependency-based-build-and-urbancode-deploy//#step-5-configure-the-pipeline-for-idz-code-review
 // Aug 11 - Using forked https://github.com/RegiBrazil/dbb-zappbuild-1 from https://github.com/IBM/dbb-zappbuild  branch  development -> lines 17 and 18
@@ -79,7 +79,7 @@ pipeline {
 
             agent { label zOsAgentLabel }
             steps {
-            echo "Clone from GitHub to Rocket Git on zOS  -> May fail if using IBM VPN with error>  stderr: ssh: connect to host github.com port 22: Connection timed out"
+            echo "cics-health -> Clone from GitHub to Rocket Git on zOS  -> May fail if using IBM VPN with error>  stderr: ssh: connect to host github.com port 22: Connection timed out"
                 script {
                     if ( verbose ) {
                         echo sh(script: 'env|sort', returnStdout: true)
