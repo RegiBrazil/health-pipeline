@@ -244,11 +244,11 @@ pipeline {
                     }
                 }
  // added unstable
-                unstable {
-                    script{
-                         error ("zUnit tests failed!!!")
-                    }
-                }
+ //               unstable {
+ //                   script{
+ //                        error ("zUnit tests failed!!!")
+ //                  }
+ //               }
 // end unstable
             }
         }
